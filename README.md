@@ -1,24 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DeepCurrent Site
+
+A modern Next.js website for DeepCurrent with an integrated customer proposals portal powered by Supabase.
+
+## Features
+
+- **Landing Page**: Clean, modern design with hero section, feature cards, and company information
+- **Proposals Portal**: Complete CRUD system for managing customer project proposals
+  - Create new proposals with detailed project information
+  - View and manage proposal status (draft, sent, accepted, rejected)
+  - Interactive proposal detail pages for client presentations
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ 
+- Supabase account and project
+
+### Environment Setup
+
+Create a `.env.local` file in the root directory:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### Database Schema
+
+Run this SQL in your Supabase SQL editor to create the proposals table:
+
+```sql
+-- Create proposals table
+CREATE TABLE proposals (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  client_name TEXT NOT NULL,
+  client_email TEXT,
+  project_overview TEXT NOT NULL,
+  objectives TEXT,
+  deliverables TEXT,
+  timeline TEXT,
+  budget_range TEXT,
+  technical_requirements TEXT,
+  success_metrics TEXT,
+  status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'sent', 'accepted', 'rejected')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable Row Level Security
+ALTER TABLE proposals ENABLE ROW LEVEL SECURITY;
+
+-- Create policy to allow all operations (adjust as needed for your security requirements)
+CREATE POLICY "Allow all operations on proposals" ON proposals
+  FOR ALL USING (true);
+```
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Proposals Portal
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Access the proposals portal at [http://localhost:3000/proposals](http://localhost:3000/proposals) to:
+- View all proposals
+- Create new proposals
+- Manage proposal status
+- View detailed proposal information
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load fonts.
 
 ## Learn More
 
